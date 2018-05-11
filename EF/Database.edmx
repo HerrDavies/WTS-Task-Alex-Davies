@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WTS.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Employee_ID" />
+          </Key>
+          <Property Name="Employee_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Surname" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'WTS-Task.dbo.Employee_Works_Shift' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Employee_Works_Shift">
+          <Key>
+            <PropertyRef Name="Employee_ID" />
+            <PropertyRef Name="Shift_ID" />
+          </Key>
+          <Property Name="Employee_ID" Type="int" Nullable="false" />
+          <Property Name="Shift_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Shifts">
+          <Key>
+            <PropertyRef Name="Shift_ID" />
+          </Key>
+          <Property Name="Shift_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Shift_Start" Type="datetime" Nullable="false" />
+          <Property Name="Shift_End" Type="datetime" Nullable="false" />
+          <Property Name="Shift_Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Employee_Works_Shift_Employee">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+          <End Role="Employee_Works_Shift" Type="Self.Employee_Works_Shift" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Employee_ID" />
+            </Principal>
+            <Dependent Role="Employee_Works_Shift">
+              <PropertyRef Name="Employee_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Employee_Works_Shift_Shifts">
+          <End Role="Shifts" Type="Self.Shifts" Multiplicity="1" />
+          <End Role="Employee_Works_Shift" Type="Self.Employee_Works_Shift" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shifts">
+              <PropertyRef Name="Shift_ID" />
+            </Principal>
+            <Dependent Role="Employee_Works_Shift">
+              <PropertyRef Name="Shift_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WTSStoreContainer">
+          <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shifts" EntityType="Self.Shifts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employee_Works_Shift" EntityType="Self.Employee_Works_Shift" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Employee_Works_Shift].[Employee_ID] AS [Employee_ID], 
+    [Employee_Works_Shift].[Shift_ID] AS [Shift_ID]
+    FROM [dbo].[Employee_Works_Shift] AS [Employee_Works_Shift]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Employee_Works_Shift_Employee" Association="Self.FK_Employee_Works_Shift_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Employee_Works_Shift" EntitySet="Employee_Works_Shift" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employee_Works_Shift_Shifts" Association="Self.FK_Employee_Works_Shift_Shifts">
+            <End Role="Shifts" EntitySet="Shifts" />
+            <End Role="Employee_Works_Shift" EntitySet="Employee_Works_Shift" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WTS" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Employee_ID" />
+          </Key>
+          <Property Name="Employee_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Shifts" Relationship="Self.Employee_Works_Shift" FromRole="Employee" ToRole="Shifts" />
+        </EntityType>
+        <EntityType Name="Shift">
+          <Key>
+            <PropertyRef Name="Shift_ID" />
+          </Key>
+          <Property Name="Shift_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Shift_Start" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Shift_End" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Shift_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.Employee_Works_Shift" FromRole="Shifts" ToRole="Employee" />
+        </EntityType>
+        <Association Name="Employee_Works_Shift">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <End Role="Shifts" Type="Self.Shift" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="WTSDatabase" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Employees" EntityType="Self.Employee" />
+          <EntitySet Name="Shifts" EntityType="Self.Shift" />
+          <AssociationSet Name="Employee_Works_Shift" Association="Self.Employee_Works_Shift">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="Shifts" EntitySet="Shifts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WTSStoreContainer" CdmEntityContainer="WTSDatabase">
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="WTS.Employee">
+              <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="Employee_ID" ColumnName="Employee_ID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shifts">
+            <EntityTypeMapping TypeName="WTS.Shift">
+              <MappingFragment StoreEntitySet="Shifts">
+                <ScalarProperty Name="Shift_ID" ColumnName="Shift_ID" />
+                <ScalarProperty Name="Shift_Start" ColumnName="Shift_Start" />
+                <ScalarProperty Name="Shift_End" ColumnName="Shift_End" />
+                <ScalarProperty Name="Shift_Name" ColumnName="Shift_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Employee_Works_Shift" TypeName="WTS.Employee_Works_Shift" StoreEntitySet="Employee_Works_Shift">
+            <EndProperty Name="Employee">
+              <ScalarProperty Name="Employee_ID" ColumnName="Employee_ID" />
+            </EndProperty>
+            <EndProperty Name="Shifts">
+              <ScalarProperty Name="Shift_ID" ColumnName="Shift_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
