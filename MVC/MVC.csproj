@@ -117,7 +117,7 @@
       <DependentUpon>wts.css</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Scripts\ViewModels\Employee.js" />
+    <Content Include="Scripts\ViewModels\Employees.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +139,8 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Content\wts.scss" />
+    <Content Include="Content\SASS\_employees.scss" />
+    <Content Include="Content\SASS\_classes.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -155,9 +157,9 @@
       <Project>{b5f4d57a-9bf6-4a52-95f4-6ec40239bd75}</Project>
       <Name>BLL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebAPI\WebAPI.csproj">
-      <Project>{36fe536d-b030-481a-af4c-bd02fff45477}</Project>
-      <Name>WebAPI</Name>
+    <ProjectReference Include="..\EmployeesAPI\EmployeesAPI.csproj">
+      <Project>{8f79216f-57f4-4505-989b-4669852dafb2}</Project>
+      <Name>EmployeesAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

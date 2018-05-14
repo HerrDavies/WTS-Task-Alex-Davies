@@ -8,22 +8,11 @@ namespace EF
 {
     public class Employees : Interfaces.IEmployees
     {
-        static WTSDatabase _dataContext = null;
-        static WTSDatabase DataContext
-        {
-            get
-            {
-                if (_dataContext == null)
-                {
-                    _dataContext = new WTSDatabase();
-                }
-                return _dataContext;
-            }
-        }
-
         public List<Common.Entities.Employee> Employees_Get()
         {
-            var arrEmployees = DataContext.Employees.ToList();
+            var objContext = new WTSDatabase();
+
+            var arrEmployees = objContext.Employees.ToList();
 
             return arrEmployees.Select(x => new Common.Entities.Employee()
             {

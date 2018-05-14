@@ -45,7 +45,7 @@ employeeVM.prototype.employeeList_Get = function () {
             // adding slight timeout so loading graphics show briefly (for demo)
             setTimeout(function () {
             this.employees(json);
-            }.bind(this), 250);
+            }.bind(this), 500);
 
         }.bind(this));
 
